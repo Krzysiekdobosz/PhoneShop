@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Zarządzanie telefonami</title>
+    <link href="/css/tailwind.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div th:replace="~{_navbar :: navbar}"></div>
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-2xl font-bold mb-4">Telefony (Admin)</h1>
+        <div class="mb-4">
+            <a th:href="@{/admin/phones/add}" class="bg-green-500 text-white px-4 py-2 rounded">Dodaj nowy telefon</a>
+        </div>
+        <ul>
+            <li th:each="phone : ${phones}" class="bg-white p-4 rounded-lg shadow mb-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <strong th:text="${phone.brand} + ' ' + ${phone.model}" class="text-lg font-semibold"></strong>
+                        <span class="block" th:text="${phone.price} + ' PLN'"></span>
+                    </div>
+                    <div class="flex space-x-2">
+                        <a th:href="@{/admin/phones/edit/{id}(id=${phone.id})}" class="bg-yellow-500 text-white px-4 py-2 rounded">Edytuj</a>
+                        <form th:action="@{/admin/phones/delete/{id}(id=${phone.id})}" method="post" class="inline">
+                            <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded">Usuń</button>
+                        </form>
+                    </div>
+                </div>
+            </li>
+        </ul>
+    </div>
+</body>
+</html>

@@ -1,0 +1,32 @@
+<th:block xmlns:th="http://www.thymeleaf.org"
+          xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity6"
+          th:fragment="navbar">
+<nav class="bg-gray-800">
+  <div class="max-w-7xl mx-auto px-2 sm:px-6 lg:px-8">
+    <div class="relative flex items-center justify-between h-16">
+      <!-- Logo -->
+      <div class="flex-shrink-0">
+        <a href="/" class="text-white text-xl font-bold">Phone Store</a>
+      </div>
+      <!-- Menu -->
+      <div class="flex space-x-4">
+        <a href="/phones" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Telefony</a>
+        <a href="/cart" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Koszyk</a>
+      </div>
+      <!-- Prawa strona -->
+      <div class="flex items-center">
+        <!-- Dla niezalogowanych użytkowników -->
+        <div sec:authorize="isAnonymous()">
+          <a href="/login" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Zaloguj</a>
+          <a href="/register" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Zarejestruj</a>
+        </div>
+        <!-- Dla zalogowanych użytkowników -->
+        <div sec:authorize="isAuthenticated()">
+          <span class="text-gray-300 px-3 py-2 rounded-md text-sm font-medium">Witaj, [[${#authentication.name}]]</span>
+          <a href="/logout" class="text-gray-300 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Wyloguj</a>
+        </div>
+      </div>
+    </div>
+  </div>
+</nav>
+</th:block>

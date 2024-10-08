@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Koszyk</title>
+    <link href="/css/output.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div th:replace="~{_navbar :: navbar}"></div>
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-2xl font-bold mb-4">Twój koszyk</h1>
+        <ul>
+            <li th:each="item : ${cartItems}" class="bg-white p-4 rounded-lg shadow mb-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <strong th:text="${item.phone.brand} + ' ' + ${item.phone.model}" class="text-lg font-semibold"></strong>
+                        <span class="block">Qty: <span th:text="${item.quantity}"></span></span>
+                    </div>
+                    <form th:action="@{/cart/remove}" method="post" class="ml-4">
+                        <input type="hidden" name="cartItemId" th:value="${item.id}" />
+                        <button type="submit" class="bg-red-500 text-white px-4 py-2 rounded">Usuń</button>
+                    </form>
+                </div>
+            </li>
+        </ul>
+        <div class="mt-4">
+            <a th:href="@{/phones}" class="bg-blue-500 text-white px-4 py-2 rounded">Kontynuuj zakupy</a>
+        </div>
+    </div>
+</body>
+</html>

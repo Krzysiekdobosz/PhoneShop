@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Edytuj telefon</title>
+</head>
+<body>
+    <h1>Edytuj telefon</h1>
+    <form th:action="@{/admin/phones/edit}" method="post" th:object="${phone}">
+        <input type="hidden" th:field="*{id}" />
+        <div>
+            <label>Marka:</label>
+            <input type="text" th:field="*{brand}" />
+        </div>
+        <div>
+            <label>Model:</label>
+            <input type="text" th:field="*{model}" />
+        </div>
+        <div>
+            <label>Cena:</label>
+            <input type="number" step="0.01" th:field="*{price}" />
+        </div>
+        <div>
+            <button type="submit">Zapisz zmiany</button>
+        </div>
+    </form>
+</body>
+</html>

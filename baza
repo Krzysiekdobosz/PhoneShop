@@ -1,0 +1,34 @@
+-- Utworzenie bazy danych
+CREATE DATABASE phone_store_db CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+
+-- Użycie bazy danych
+USE phone_store_db;
+
+-- Tworzenie tabeli 'users'
+CREATE TABLE users (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL,
+    role VARCHAR(50) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+-- Tworzenie tabeli 'phone'
+CREATE TABLE phone (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    brand VARCHAR(255) NOT NULL,
+    model VARCHAR(255) NOT NULL,
+    price DECIMAL(10,2) NOT NULL,
+    PRIMARY KEY (id)
+);
+
+-- Tworzenie tabeli 'cart_item'
+CREATE TABLE cart_item (
+    id BIGINT NOT NULL AUTO_INCREMENT,
+    user_id BIGINT NOT NULL,
+    phone_id BIGINT NOT NULL,
+    quantity INT NOT NULL,
+    PRIMARY KEY (id),
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (phone_id) REFERENCES phone(id) ON DELETE CASCADE
+);

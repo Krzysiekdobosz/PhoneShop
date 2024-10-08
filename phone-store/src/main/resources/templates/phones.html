@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>Lista telefonów</title>
+    <link href="/css/output.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100">
+    <div th:replace="~{_navbar :: navbar}"></div>
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-2xl font-bold mb-4">Telefony</h1>
+        <form th:action="@{/phones/search}" method="get" class="mb-4">
+            <input type="text" name="query" placeholder="Szukaj..." class="border p-2 rounded w-full" />
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded mt-2">Szukaj</button>
+        </form>
+        <ul>
+            <li th:each="phone : ${phones}" class="bg-white p-4 rounded-lg shadow mb-4">
+                <div class="flex justify-between items-center">
+                    <div>
+                        <strong th:text="${phone.brand} + ' ' + ${phone.model}" class="text-lg font-semibold"></strong>
+                        <span class="block" th:text="${phone.price} + ' PLN'"></span>
+                    </div>
+                    <form th:action="@{/cart/add}" method="post" class="ml-4">
+                        <input type="hidden" name="phoneId" th:value="${phone.id}" />
+                        <button type="submit" class="bg-green-500 text-white px-4 py-2 rounded">Dodaj do koszyka</button>
+                    </form>
+                </div>
+            </li>
+        </ul>
+        <div class="mt-4">
+            <a th:href="@{/cart}" class="bg-blue-500 text-white px-4 py-2 rounded">Przejdź do koszyka</a>
+        </div>
+    </div>
+</body>
+</html>
