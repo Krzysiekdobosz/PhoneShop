@@ -67,6 +67,12 @@
             <artifactId>hibernate-validator</artifactId>
         </dependency>
 
+        <!-- Wysyłanie email'li -->
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-mail</artifactId>
+        </dependency>
+
         <!-- Lombok (opcjonalnie) -->
         <dependency>
             <groupId>org.projectlombok</groupId>
