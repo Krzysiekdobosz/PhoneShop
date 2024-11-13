@@ -1,11 +1,13 @@
 package DoboszBartoszuk.example.phone_store.controller;
 
-import DoboszBartoszuk.example.phone_store.model.*;
-import DoboszBartoszuk.example.phone_store.repository.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import DoboszBartoszuk.example.phone_store.model.*;
+import DoboszBartoszuk.example.phone_store.repository.*;
+
 import java.security.Principal;
 import java.util.List;
 

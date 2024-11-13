@@ -1,12 +1,13 @@
 package DoboszBartoszuk.example.phone_store.controller;
 
-import DoboszBartoszuk.example.phone_store.model.Phone;
-import DoboszBartoszuk.example.phone_store.repository.PhoneRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+
+import DoboszBartoszuk.example.phone_store.model.Phone;
+import DoboszBartoszuk.example.phone_store.repository.PhoneRepository;
 
 @Controller
 @RequestMapping("/admin")
