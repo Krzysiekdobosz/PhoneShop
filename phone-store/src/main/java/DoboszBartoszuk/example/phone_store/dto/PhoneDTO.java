@@ -11,6 +11,15 @@ public class PhoneDTO {
     private String manufacturer;
     private BigDecimal price;
 
+    public PhoneDTO() {
+    }
+    public PhoneDTO(Long id, String model, String manufacturer, BigDecimal price) {
+        this.id = id;
+        this.model = model;
+        this.manufacturer = manufacturer;
+        this.price = price;
+    }
+
     // Gettery i settery
     public Long getId() {
         return id;

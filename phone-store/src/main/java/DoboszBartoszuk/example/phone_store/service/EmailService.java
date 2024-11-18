@@ -12,6 +12,7 @@ import org.springframework.stereotype.Service;
 import DoboszBartoszuk.example.phone_store.model.EmailDetails;
 
 @Service
+//@Profile("!test")
 public class EmailService {
     @Autowired
     private JavaMailSender javaMailSender;
