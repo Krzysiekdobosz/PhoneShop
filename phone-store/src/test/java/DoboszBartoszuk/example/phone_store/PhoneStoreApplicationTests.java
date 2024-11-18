@@ -1,73 +1,88 @@
-// package DoboszBartoszuk.example.phone_store;
+package DoboszBartoszuk.example.phone_store;
 
-// import java.math.BigDecimal;
+import java.math.BigDecimal;
 
-// import org.junit.jupiter.api.Test;
-// import org.springframework.beans.factory.annotation.Autowired;
-// import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
-// import org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration;
-// import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-// import org.springframework.boot.test.context.SpringBootTest;
-// import org.springframework.boot.test.mock.mockito.MockBean;
-// import org.springframework.http.MediaType;
-// import org.springframework.mail.javamail.JavaMailSender;
-// import org.springframework.test.web.servlet.MockMvc;
-// import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-// import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
+import org.junit.jupiter.api.Test;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
+import org.springframework.boot.autoconfigure.mail.MailSenderAutoConfiguration;
+import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-// import com.fasterxml.jackson.databind.ObjectMapper;
-// import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.dataformat.xml.XmlMapper;
 
-// import DoboszBartoszuk.example.phone_store.dto.PhoneDTO;
-// import DoboszBartoszuk.example.phone_store.service.EmailService;
+import DoboszBartoszuk.example.phone_store.dto.PhoneDTO;
+import DoboszBartoszuk.example.phone_store.service.EmailService;
 
-// @SpringBootTest
-// @EnableAutoConfiguration(exclude = MailSenderAutoConfiguration.class)
-// @AutoConfigureMockMvc
-// class PhoneStoreApplicationTests {
 
-//     @Autowired
-//     private MockMvc mockMvc;
+@SpringBootTest
+@EnableAutoConfiguration(exclude = MailSenderAutoConfiguration.class)
+@AutoConfigureMockMvc
+class PhoneStoreApplicationTests {
 
-//     private ObjectMapper objectMapper = new ObjectMapper();
-//     private XmlMapper xmlMapper = new XmlMapper();
-//     @MockBean
-//     private JavaMailSender mailSender;
-//     @MockBean
-//     private EmailService emailService;
+    @Autowired
+    private MockMvc mockMvc;
 
-//     @Test
-//     void importPhoneJson() throws Exception {
-//         PhoneDTO phoneDTO = new PhoneDTO();
-//         phoneDTO.setId(2L);
-//         phoneDTO.setModel("Galaxy S21");
-//         phoneDTO.setManufacturer("Samsung");
-//         phoneDTO.setPrice(new BigDecimal("799.99"));
+    private ObjectMapper objectMapper = new ObjectMapper();
+    private XmlMapper xmlMapper = new XmlMapper();
+    @MockBean
+    private JavaMailSender mailSender;
+    @MockBean
+    private EmailService emailService;
+    
+    @Test
+    void addPhoneSuccessfully() throws Exception {
+    PhoneDTO phoneDTO = new PhoneDTO(null, "iPhone 14", "Apple", new BigDecimal("999.99"));
 
-//         String jsonContent = objectMapper.writeValueAsString(phoneDTO);
+    String jsonContent = objectMapper.writeValueAsString(phoneDTO);
 
-//         mockMvc.perform(post("/phones/import/json")
-//                 .contentType(MediaType.APPLICATION_JSON)
-//                 .content(jsonContent))
-//                 .andExpect(status().isOk());
-//     }
+    mockMvc.perform(post("/phones/import/json")
+            .contentType(MediaType.APPLICATION_JSON)
+            .content(jsonContent))
+            .andExpect(status().isOk())
+            .andExpect(content().string("Telefon zaimportowany pomyślnie."));
+}
 
-//     @Test
-//     void importPhoneXml() throws Exception {
-//         PhoneDTO phoneDTO = new PhoneDTO();
-//         phoneDTO.setId(2L);
-//         phoneDTO.setModel("Galaxy S21");
-//         phoneDTO.setManufacturer("Samsung");
-//         phoneDTO.setPrice(new BigDecimal("799.99"));
+    @Test
+    void importPhoneJson() throws Exception {
+        PhoneDTO phoneDTO = new PhoneDTO();
+        phoneDTO.setId(2L);
+        phoneDTO.setModel("Galaxy S21");
+        phoneDTO.setManufacturer("Samsung");
+        phoneDTO.setPrice(new BigDecimal("799.99"));
 
-//         String xmlContent = xmlMapper.writeValueAsString(phoneDTO);
+        String jsonContent = objectMapper.writeValueAsString(phoneDTO);
 
-//         mockMvc.perform(post("/phones/import/xml")
-//                 .contentType(MediaType.APPLICATION_XML)
-//                 .content(xmlContent))
-//                 .andExpect(status().isOk());
-//     }
-// }
+        mockMvc.perform(post("/phones/import/json")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonContent))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void importPhoneXml() throws Exception {
+        PhoneDTO phoneDTO = new PhoneDTO();
+        phoneDTO.setId(2L);
+        phoneDTO.setModel("Galaxy S21");
+        phoneDTO.setManufacturer("Samsung");
+        phoneDTO.setPrice(new BigDecimal("799.99"));
+
+        String xmlContent = xmlMapper.writeValueAsString(phoneDTO);
+
+        mockMvc.perform(post("/phones/import/xml")
+                .contentType(MediaType.APPLICATION_XML)
+                .content(xmlContent))
+                .andExpect(status().isOk());
+    }
+}
 // package DoboszBartoszuk.example.phone_store;
 
 // import DoboszBartoszuk.example.phone_store.dto.PhoneDTO;
