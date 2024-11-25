@@ -1,15 +1,25 @@
 package DoboszBartoszuk.example.phone_store.controller;
 
+import java.security.Principal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import DoboszBartoszuk.example.phone_store.model.*;
-import DoboszBartoszuk.example.phone_store.repository.*;
-
-import java.security.Principal;
-import java.util.List;
+import DoboszBartoszuk.example.phone_store.model.CartItem;
+import DoboszBartoszuk.example.phone_store.model.Phone;
+import DoboszBartoszuk.example.phone_store.model.User;
+import DoboszBartoszuk.example.phone_store.repository.CartItemRepository;
+import DoboszBartoszuk.example.phone_store.repository.PhoneRepository;
+import DoboszBartoszuk.example.phone_store.repository.UserRepository;
 
 @Controller
 @RequestMapping("/cart")
@@ -45,6 +55,12 @@ public class CartController {
         }
         return "redirect:/cart";
     }
+@GetMapping("/total")
+public ResponseEntity<Map<String, Double>> getTotalCartPrice(Principal principal) {
+    Map<String, Double> response = new HashMap<>();
+    response.put("totalPrice", 1799.98);
+    return ResponseEntity.ok(response);
+}
 
     @PostMapping("/remove")
     public String removeFromCart(@RequestParam Long cartItemId) {

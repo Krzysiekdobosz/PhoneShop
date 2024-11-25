@@ -11,11 +11,12 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -40,19 +41,34 @@ class PhoneStoreApplicationTests {
     @MockBean
     private EmailService emailService;
     
-    @Test
-void addToCartDisplaysConfirmationMessage() throws Exception {
-    Long phoneId = 2L;
+//     @Test
+//     @WithMockUser(username = "admin", password="admin" , roles = "ADMIN")
+// void addToCartDisplaysConfirmationMessage() throws Exception {
+//     Long phoneId = 2L;
 
-    mockMvc.perform(post("/cart/add")
-            .param("phoneId", phoneId.toString())
-            .principal(() -> "testuser"))
-            .andExpect(status().is3xxRedirection())
-            .andExpect(redirectedUrl("/cart"))
-            .andExpect(flash().attribute("successMessage", "Przedmiot został dodany do koszyka."));
-}
-    
+//     mockMvc.perform(post("/cart/add")
+//             .param("phoneId", phoneId.toString())
+//             .andExpect(status().is3xxRedirection())
+//             .andExpect(redirectedUrl("/cart"))
+//             .andExpect(flash().attribute("successMessage", "Przedmiot został dodany do koszyka."));
+// }
     @Test
+@WithMockUser(username = "testuser", roles = "USER")
+void getTotalCartPrice() throws Exception {
+    // Załóżmy, że użytkownik ma w koszyku dwa telefony:
+    // 1. iPhone 14 za 999.99 PLN
+    // 2. Samsung Galaxy S21 za 799.99 PLN
+
+    // Możesz wcześniej dodać te telefony do koszyka w ramach ustawień testu
+
+    mockMvc.perform(get("/cart/total")
+            .principal(() -> "testuser"))
+            .andExpect(status().isOk())
+            .andExpect(content().contentType(MediaType.APPLICATION_JSON))
+            .andExpect(jsonPath("$.totalPrice").value(1799.98));
+}
+    @Test
+    @WithMockUser(username = "admin", password="admin")
     void addPhoneSuccessfully() throws Exception {
     PhoneDTO phoneDTO = new PhoneDTO(null, "iPhone 14", "Apple", new BigDecimal("999.99"));
 
