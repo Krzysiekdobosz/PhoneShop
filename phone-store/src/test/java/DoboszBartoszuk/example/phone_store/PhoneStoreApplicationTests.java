@@ -14,6 +14,8 @@ import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.test.web.servlet.MockMvc;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.content;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.flash;
+import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.redirectedUrl;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,6 +39,18 @@ class PhoneStoreApplicationTests {
     private JavaMailSender mailSender;
     @MockBean
     private EmailService emailService;
+    
+    @Test
+void addToCartDisplaysConfirmationMessage() throws Exception {
+    Long phoneId = 2L;
+
+    mockMvc.perform(post("/cart/add")
+            .param("phoneId", phoneId.toString())
+            .principal(() -> "testuser"))
+            .andExpect(status().is3xxRedirection())
+            .andExpect(redirectedUrl("/cart"))
+            .andExpect(flash().attribute("successMessage", "Przedmiot został dodany do koszyka."));
+}
     
     @Test
     void addPhoneSuccessfully() throws Exception {
