@@ -1,5 +1,6 @@
 package DoboszBartoszuk.example.phone_store.controller;
 
+import java.math.BigDecimal;
 import java.security.Principal;
 import java.util.HashMap;
 import java.util.List;
@@ -56,9 +57,14 @@ public class CartController {
         return "redirect:/cart";
     }
 @GetMapping("/total")
-public ResponseEntity<Map<String, Double>> getTotalCartPrice(Principal principal) {
-    Map<String, Double> response = new HashMap<>();
-    response.put("totalPrice", 1799.98);
+public ResponseEntity<Map<String, BigDecimal>> getTotalCartPrice(Principal principal) {
+    User user = userRepository.findByUsername(principal.getName());
+    List<CartItem> cartItems = cartItemRepository.findByUser(user);
+    BigDecimal totalPrice = cartItems.stream()
+        .map(item -> item.getPhone().getPrice().multiply(BigDecimal.valueOf(item.getQuantity())))
+        .reduce(BigDecimal.ZERO, BigDecimal::add);
+    Map<String, BigDecimal> response = new HashMap<>();
+    response.put("totalPrice", totalPrice);
     return ResponseEntity.ok(response);
 }
 
