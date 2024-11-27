@@ -451,9 +451,9 @@ class PhoneStoreApplicationTests {
                 .andExpect(status().isOk())
                 .andExpect(content().contentType("application/xml;charset=UTF-8"))
                 .andExpect(xpath("/Phone/id").string("3"))
-                .andExpect(xpath("/Phone/model").string("V1"))
+                .andExpect(xpath("/Phone/model").string("V1 ZMIANA"))
                 .andExpect(xpath("/Phone/brand").string("Motorola"))
-                .andExpect(xpath("/Phone/price").string("239.99"));
+                .andExpect(xpath("/Phone/price").string("439.99"));
     }
 
     @Test
