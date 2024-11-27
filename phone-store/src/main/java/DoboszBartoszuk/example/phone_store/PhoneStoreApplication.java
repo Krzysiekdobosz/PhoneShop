@@ -8,9 +8,7 @@ import io.github.cdimascio.dotenv.Dotenv;
 public class PhoneStoreApplication {
 
 	public static void main(String[] args) {
-		// Ładowanie zmiennych z pliku .env
         Dotenv dotenv = Dotenv.load();
-        // Ustawienie zmiennych jako właściwości systemowe
         System.setProperty("spring.mail.username", dotenv.get("SPRING_MAIL_USERNAME"));
         System.setProperty("spring.mail.password", dotenv.get("SPRING_MAIL_PASSWORD"));
 

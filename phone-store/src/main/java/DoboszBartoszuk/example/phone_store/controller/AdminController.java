@@ -31,12 +31,12 @@ public class AdminController {
     }
 
     @PostMapping("/phones/add")
-    public String addPhone(@ModelAttribute Phone phone) {
+    public String addPhone(@RequestBody Phone phone) {
+        System.out.println("Otrzymany telefon: " + phone.getModel() + " " + phone.getBrand() + " " + phone.getPrice());
         phoneRepository.save(phone);
         return "redirect:/admin/phones";
     }
 
-    // Edycja telefonu
     @GetMapping("/phones/edit/{id}")
     public String showEditPhoneForm(@PathVariable Long id, Model model) {
         Phone phone = phoneRepository.findById(id).orElse(null);
@@ -48,12 +48,12 @@ public class AdminController {
     }
 
     @PostMapping("/phones/edit")
-    public String editPhone(@ModelAttribute Phone phone) {
+    public String editPhone(@RequestBody Phone phone) {
+        System.out.println("Otrzymany telefon po edycji: " + phone);
         phoneRepository.save(phone);
         return "redirect:/admin/phones";
     }
 
-    // Usuwanie telefonu
     @PostMapping("/phones/delete/{id}")
     public String deletePhone(@PathVariable Long id) {
         phoneRepository.deleteById(id);

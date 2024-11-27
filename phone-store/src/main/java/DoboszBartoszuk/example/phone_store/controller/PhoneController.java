@@ -44,65 +44,76 @@ public class PhoneController {
         model.addAttribute("phones", phones);
         return "phones";
     }
+
+    @GetMapping(value = "/mobile", produces = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<List<PhoneDTO>> getAllPhones() {
+        List<PhoneDTO> phones = phoneRepository.findAll()
+                .stream()
+                .map(this::convertToDTO)
+                .toList();
+        return ResponseEntity.ok(phones);
+    }
+
     @GetMapping(value = "/{id}/json", produces = MediaType.APPLICATION_JSON_VALUE)
-public ResponseEntity<String> getPhoneAsJson(@PathVariable Long id) {
-    Optional<PhoneDTO> phoneDTO = phoneRepository.findById(id).map(this::convertToDTO);
-    if (phoneDTO.isPresent()) {
-        try {
-            String json = serializationService.serializeToJson(phoneDTO.get());
-            return ResponseEntity.ok(json);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Błąd serializacji do JSON.");
+    public ResponseEntity<String> getPhoneAsJson(@PathVariable Long id) {
+        Optional<PhoneDTO> phoneDTO = phoneRepository.findById(id).map(this::convertToDTO);
+        if (phoneDTO.isPresent()) {
+            try {
+                String json = serializationService.serializeToJson(phoneDTO.get());
+                return ResponseEntity.ok(json);
+            } catch (IOException e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Błąd serializacji do JSON.");
+            }
+        } else {
+            return ResponseEntity.notFound().build();
         }
-    } else {
-        return ResponseEntity.notFound().build();
     }
-}
 
-@GetMapping(value = "/{id}/xml", produces = MediaType.APPLICATION_XML_VALUE)
-public ResponseEntity<String> getPhoneAsXml(@PathVariable Long id) {
-    Optional<PhoneDTO> phoneDTO = phoneRepository.findById(id).map(this::convertToDTO);
-    if (phoneDTO.isPresent()) {
-        try {
-            String xml = serializationService.serializeToXml(phoneDTO.get());
-            return ResponseEntity.ok(xml);
-        } catch (IOException e) {
-            return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Błąd serializacji do XML.");
+    @GetMapping(value = "/{id}/xml", produces = MediaType.APPLICATION_XML_VALUE)
+    public ResponseEntity<String> getPhoneAsXml(@PathVariable Long id) {
+        Optional<PhoneDTO> phoneDTO = phoneRepository.findById(id).map(this::convertToDTO);
+        if (phoneDTO.isPresent()) {
+            try {
+                String xml = serializationService.serializeToXml(phoneDTO.get());
+                return ResponseEntity.ok(xml);
+            } catch (IOException e) {
+                return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR).body("Błąd serializacji do XML.");
+            }
+        } else {
+            return ResponseEntity.notFound().build();
         }
-    } else {
-        return ResponseEntity.notFound().build();
     }
-}
 
-@PostMapping(value = "/import/json", consumes = MediaType.APPLICATION_JSON_VALUE)
-public ResponseEntity<String> importPhoneFromJson(@RequestBody PhoneDTO phoneDTO) {
-    Phone phone = convertToEntity(phoneDTO);
-    phoneRepository.save(phone);
-    return ResponseEntity.ok("Telefon zaimportowany pomyślnie.");
-}
+    @PostMapping(value = "/import/json", consumes = MediaType.APPLICATION_JSON_VALUE)
+    public ResponseEntity<String> importPhoneFromJson(@RequestBody PhoneDTO phoneDTO) {
+        Phone phone = convertToEntity(phoneDTO);
+        phoneRepository.save(phone);
+        return ResponseEntity.ok("Telefon zaimportowany pomyślnie.");
+    }
 
-@PostMapping(value = "/import/xml", consumes = MediaType.APPLICATION_XML_VALUE)
-public ResponseEntity<String> importPhoneFromXml(@RequestBody PhoneDTO phoneDTO) {
-    Phone phone = convertToEntity(phoneDTO);
-    phoneRepository.save(phone);
-    return ResponseEntity.ok("Telefon zaimportowany pomyślnie.");
-}
+    @PostMapping(value = "/import/xml", consumes = MediaType.APPLICATION_XML_VALUE)
+    public ResponseEntity<String> importPhoneFromXml(@RequestBody PhoneDTO phoneDTO) {
+        Phone phone = convertToEntity(phoneDTO);
+        phoneRepository.save(phone);
+        return ResponseEntity.ok("Telefon zaimportowany pomyślnie.");
+    }
 
-private PhoneDTO convertToDTO(Phone phone) {
-    PhoneDTO dto = new PhoneDTO();
-    dto.setId(phone.getId());
-    dto.setModel(phone.getModel());
-    dto.setManufacturer(phone.getBrand());
-    return dto;
-}
-private Phone convertToEntity(PhoneDTO dto) {
-    Phone phone = new Phone();
-    phone.setId(dto.getId());
-    phone.setBrand(dto.getManufacturer());
-    phone.setModel(dto.getModel());
-    phone.setPrice(dto.getPrice());
-    return phone;
-}
+    private PhoneDTO convertToDTO(Phone phone) {
+        PhoneDTO dto = new PhoneDTO();
+        dto.setId(phone.getId());
+        dto.setModel(phone.getModel());
+        dto.setBrand(phone.getBrand());
+        dto.setPrice(phone.getPrice());
+        return dto;
+    }
 
+    private Phone convertToEntity(PhoneDTO dto) {
+        Phone phone = new Phone();
+        phone.setId(dto.getId());
+        phone.setBrand(dto.getBrand());
+        phone.setModel(dto.getModel());
+        phone.setPrice(dto.getPrice());
+        return phone;
+    }
 
 }

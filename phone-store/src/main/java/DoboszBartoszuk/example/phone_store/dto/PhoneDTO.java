@@ -8,8 +8,18 @@ import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
 public class PhoneDTO {
     private Long id;
     private String model;
-    private String manufacturer;
+    private String brand;
     private BigDecimal price;
+
+    public PhoneDTO(long id, String model, String brand, BigDecimal price) {
+        this.id = id;
+        this.model = model;
+        this.brand = brand;
+        this.price = price;
+    }
+
+    public PhoneDTO() {
+    }
 
     // Gettery i settery
     public Long getId() {
@@ -28,18 +38,20 @@ public class PhoneDTO {
         this.model = model;
     }
 
-    public String getManufacturer() {
-        return manufacturer;
+    public String getBrand() {
+        return brand;
     }
 
-    public void setManufacturer(String manufacturer) {
-        this.manufacturer = manufacturer;
+    public void setBrand(String brand) {
+        this.brand = brand;
     }
+
     public void setPrice(BigDecimal price) {
         this.price = price;
     }
+
     public BigDecimal getPrice() {
         return price;
     }
-    
+
 }
