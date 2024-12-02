@@ -24,8 +24,6 @@ public class Phone {
 
     private BigDecimal price;
 
-    // Gettery i settery
-
     public Long getId() {
         return id;
     }

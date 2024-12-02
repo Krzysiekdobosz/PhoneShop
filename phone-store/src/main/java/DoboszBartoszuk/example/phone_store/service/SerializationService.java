@@ -11,7 +11,7 @@ import DoboszBartoszuk.example.phone_store.dto.PhoneDTO;
 
 
 @Service
-public class SerializationService {
+public class SerializationService implements SerializationServiceInterface {
     private final ObjectMapper objectMapper;
     private final XmlMapper xmlMapper;
 
@@ -20,10 +20,12 @@ public class SerializationService {
         this.xmlMapper = new XmlMapper();
     }
 
+    @Override
     public String serializeToJson(PhoneDTO phoneDTO) throws IOException {
         return objectMapper.writeValueAsString(phoneDTO);
     }
 
+    @Override
     public String serializeToXml(PhoneDTO phoneDTO) throws IOException {
         return xmlMapper.writeValueAsString(phoneDTO);
     }

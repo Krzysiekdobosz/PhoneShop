@@ -21,7 +21,6 @@ public class PhoneDTO {
     public PhoneDTO() {
     }
 
-    // Gettery i settery
     public Long getId() {
         return id;
     }

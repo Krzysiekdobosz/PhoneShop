@@ -12,7 +12,7 @@ import org.springframework.stereotype.Service;
 import DoboszBartoszuk.example.phone_store.model.EmailDetails;
 
 @Service
-public class EmailService {
+public class EmailService implements EmailServiceInterface {
     @Autowired
     private JavaMailSender javaMailSender;
 
@@ -20,6 +20,7 @@ public class EmailService {
     private String sender;
 
     @Async
+    @Override
     public CompletableFuture<String> sendEmail(EmailDetails details) {
         try {
             SimpleMailMessage simpleMailMessage = new SimpleMailMessage();
@@ -29,8 +30,11 @@ public class EmailService {
             simpleMailMessage.setSubject(details.getSubject());
 
             javaMailSender.send(simpleMailMessage);
+
+            System.out.println("Mail sent successfully");
             return CompletableFuture.completedFuture("Mail sent successfully");
         } catch (Exception e) {
+            System.err.println("Error while sending mail: " + e.getMessage());
             return CompletableFuture.completedFuture("Error while sending mail: " + e.getMessage());
         }
     }

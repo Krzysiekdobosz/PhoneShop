@@ -365,8 +365,11 @@ package DoboszBartoszuk.example.phone_store;
 
 import DoboszBartoszuk.example.phone_store.dto.PhoneDTO;
 import DoboszBartoszuk.example.phone_store.service.EmailService;
+import DoboszBartoszuk.example.phone_store.service.SerializationService;
 import io.github.cdimascio.dotenv.Dotenv;
 import DoboszBartoszuk.example.phone_store.model.EmailDetails;
+
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -376,8 +379,12 @@ import org.springframework.http.MediaType;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.dataformat.xml.XmlMapper;
+
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.concurrent.CompletableFuture;
 
@@ -390,7 +397,6 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 class PhoneStoreApplicationTests {
 
     static {
-        // Ładowanie zmiennych z pliku .env dla testów
         Dotenv dotenv = Dotenv.load();
         System.setProperty("spring.mail.username", dotenv.get("SPRING_MAIL_USERNAME"));
         System.setProperty("spring.mail.password", dotenv.get("SPRING_MAIL_PASSWORD"));
@@ -405,11 +411,19 @@ class PhoneStoreApplicationTests {
     @MockBean
     private JavaMailSender javaMailSender;
 
-    private ObjectMapper objectMapper = new ObjectMapper();
-    private XmlMapper xmlMapper = new XmlMapper();
+    private ObjectMapper objectMapper;
+    private XmlMapper xmlMapper;
+    private SerializationService serializationService;
+
+    @BeforeEach
+    void setUp() {
+        objectMapper = new ObjectMapper();
+        xmlMapper = new XmlMapper();
+        serializationService = new SerializationService();
+    }
 
     @Test
-    void importPhoneJson() throws Exception {
+    void givenPhoneDTO_whenImportPhoneJson_thenStatusOK() throws Exception {
         PhoneDTO phoneDTO = new PhoneDTO(2L, "Galaxy S21", "Samsung", new BigDecimal("799.99"));
 
         String jsonContent = objectMapper.writeValueAsString(phoneDTO);
@@ -421,7 +435,7 @@ class PhoneStoreApplicationTests {
     }
 
     @Test
-    void importPhoneXml() throws Exception {
+    void givenPhoneDTO_whenImportPhoneXml_thenStatusOK() throws Exception {
         PhoneDTO phoneDTO = new PhoneDTO(2L, "Galaxy S21", "Samsung", new BigDecimal("799.99"));
 
         String xmlContent = xmlMapper.writeValueAsString(phoneDTO);
@@ -433,7 +447,7 @@ class PhoneStoreApplicationTests {
     }
 
     @Test
-    void getPhoneAsJson() throws Exception {
+    void whenGetPhoneAsJson_thenJSONData() throws Exception {
         mockMvc.perform(get("/phones/11/json")
                 .accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
@@ -445,7 +459,7 @@ class PhoneStoreApplicationTests {
     }
 
     @Test
-    void getPhoneAsXml() throws Exception {
+    void whenGetPhoneAsXml_thenXMLData() throws Exception {
         mockMvc.perform(get("/phones/3/xml")
                 .accept(MediaType.APPLICATION_XML))
                 .andExpect(status().isOk())
@@ -458,7 +472,7 @@ class PhoneStoreApplicationTests {
 
     @Test
     @WithMockUser(username = "user123", password = "qwerty1234")
-    void addToCart() throws Exception {
+    void givenPhoneAndUserData_whenAddToCart_thenStatusRedirection() throws Exception {
         mockMvc.perform(post("/cart/add")
                 .param("phoneId", "2")
                 .principal(() -> "user"))
@@ -467,7 +481,7 @@ class PhoneStoreApplicationTests {
     }
 
     @Test
-    void registerUser() throws Exception {
+    void givenRegisterData_whenRegisterUser_thenStatusOK() throws Exception {
         String requestBody = """
                 {
                     "username": "newuser",
@@ -484,7 +498,7 @@ class PhoneStoreApplicationTests {
     }
 
     @Test
-    void loginUser() throws Exception {
+    void givenLoginData_whenLoginUser_thenOKStatusAndToken() throws Exception {
         String requestBody = """
                 {
                     "username": "user123",
@@ -501,7 +515,7 @@ class PhoneStoreApplicationTests {
 
     @Test
     @WithMockUser(username = "user123", roles = "ADMIN")
-    void addPhoneAsAdmin() throws Exception {
+    void givenAdminAndPhoneData_whenAddPhoneAsAdmin_thenStatusRedirection() throws Exception {
         String requestBody = """
                 {
                     "brand": "Apple",
@@ -520,7 +534,7 @@ class PhoneStoreApplicationTests {
 
     @Test
     @WithMockUser(username = "user123", roles = "ADMIN")
-    void editPhoneAsAdmin() throws Exception {
+    void givenAdminAndPhoneData_whenEditPhoneAsAdmin_thenStatusRedirection() throws Exception {
         String requestBody = """
                 {
                     "id": 4,
@@ -540,7 +554,7 @@ class PhoneStoreApplicationTests {
 
     @Test
     @WithMockUser(username = "user123", password = "qwerty1234", roles = "ADMIN")
-    void deletePhoneAsAdmin() throws Exception {
+    void givenAdminAndPhoneData_whenDeletePhoneAsAdmin_thenStatusRedirection() throws Exception {
         mockMvc.perform(post("/admin/phones/delete/2")
                 .principal(() -> "admin"))
                 .andExpect(status().is3xxRedirection())
@@ -549,7 +563,7 @@ class PhoneStoreApplicationTests {
 
     @Test
     @WithMockUser(username = "user123", password = "qwerty1234")
-    void viewCart() throws Exception {
+    void givenUserData_whenViewCart_thenStatusOkAndAttributeExists() throws Exception {
         mockMvc.perform(get("/cart")
                 .principal(() -> "user"))
                 .andExpect(status().isOk())
@@ -558,7 +572,7 @@ class PhoneStoreApplicationTests {
     }
 
     @Test
-    void sendEmail() throws Exception {
+    void givenEmailDetails_whenSendEmail_thenStatusOk() throws Exception {
         EmailDetails emailDetails = new EmailDetails();
         emailDetails.setRecipient("test@example.com");
         emailDetails.setSubject("Test Email");
@@ -572,5 +586,25 @@ class PhoneStoreApplicationTests {
                 .content(
                         "{\"recipient\": \"test@example.com\", \"subject\": \"Test Subject\", \"msgBody\": \"This is a test email.\"}"))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void givenPhoneDataAndExpectedJson_whenSerializeToJSON_thenAssertionIsEqual() throws IOException {
+        PhoneDTO phoneDTO = new PhoneDTO(1L, "Galaxy S21", "Samsung", BigDecimal.valueOf(799.99));
+        String expectedJson = "{\"id\":1,\"model\":\"Galaxy S21\",\"brand\":\"Samsung\",\"price\":799.99}";
+
+        String actualJson = serializationService.serializeToJson(phoneDTO);
+
+        assertThat(actualJson).isEqualTo(expectedJson);
+    }
+
+    @Test
+    void givenPhoneDataAndExpectedXML_whenSerializeToXML_thenAssertionIsEqual() throws IOException {
+        PhoneDTO phoneDTO = new PhoneDTO(1L, "Galaxy S21", "Samsung", BigDecimal.valueOf(799.99));
+        String expectedXML = "<Phone><id>1</id><model>Galaxy S21</model><brand>Samsung</brand><price>799.99</price></Phone>";
+
+        String actualXML = serializationService.serializeToXml(phoneDTO);
+
+        assertThat(actualXML).isEqualTo(expectedXML);
     }
 }

@@ -25,8 +25,6 @@ public class User {
 
     private String role;
 
-    // Gettery i settery
-
     public Long getId() {
         return id;
     }

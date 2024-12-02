@@ -14,7 +14,7 @@ public class JwtTokenProvider {
     @Value("${jwt.secret}")
     private String secretKey;
 
-    private final long validityInMilliseconds = 3600000; // 1 godzina
+    private final long validityInMilliseconds = 3600000;
 
     private SecretKey getSigningKey() {
         return Keys.hmacShaKeyFor(secretKey.getBytes());
@@ -45,7 +45,6 @@ public class JwtTokenProvider {
             Jwts.parserBuilder().setSigningKey(getSigningKey()).build().parseClaimsJws(token);
             return true;
         } catch (JwtException | IllegalArgumentException e) {
-            // Możesz obsłużyć wyjątek lub zalogować
             return false;
         }
     }
